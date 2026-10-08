@@ -1,3 +1,13 @@
+# Velvet Scoop — Artisan Gelato
+
+![Velvet Scoop site preview](docs/assets/site-preview.gif)
+
+A scroll-choreographed WebGL gelato landing site (React · Three.js · GSAP · Tailwind) with the Scoopy order chatbot.
+
+**Design docs:** themes, design tech and the design knowledge base are in [`docs/DESIGN.md`](docs/DESIGN.md).
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
