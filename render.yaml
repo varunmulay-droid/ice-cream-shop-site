@@ -1,0 +1,15 @@
+# One-touch Render Blueprint — deploy Velvet Scoop as a static site
+# Dashboard → New + → Blueprint → point at this repo. Done.
+services:
+  - type: web
+    name: velvet-scoop
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: 20
