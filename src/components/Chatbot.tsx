@@ -10,7 +10,24 @@ const FLAVORS = [
   { name: 'Madagascar Vanilla Bean', price: '$4.00', allergens: 'dairy' },
 ];
 
+const QUICK_OPTIONS: { label: string; reply: string }[] = [
+  { label: '🍨 Flavors', reply: 'We serve Artisan Gelato, Vegan Sorbets and Gourmet Sundaes. Right now: ' + FLAVORS.map((f) => f.name).join(', ') + '.' },
+  { label: '🔥 Best sellers', reply: 'Crowd favorites: Sicilian Pistachio ($4.50) and Dark Cocoa Fudge ($4.50). Want something lighter? Electric Wild Berry ($4.00) is our top vegan pick.' },
+  { label: '💰 Prices', reply: FLAVORS.map((f) => `${f.name} — ${f.price}/scoop`).join('\n') + '\nSundaes start at $8.50.' },
+  { label: '🕐 Opening hours', reply: "We're scooping Monday–Sunday, 11:00 AM – 11:00 PM, 365 days a year. Holiday pop-ups get announced on our Instagram!" },
+  { label: '🌱 Vegan options', reply: 'Our Vegan Sorbets are 100% dairy-free real fruit — the Electric Wild Berry and Mango Passionfruit are fan favorites.' },
+  { label: '⚠️ Allergens', reply: FLAVORS.map((f) => `${f.name}: ${f.allergens}`).join('\n') + '\nHave a severe allergy? Message us on WhatsApp before ordering.' },
+  { label: '🍧 Sundaes', reply: 'Our Gourmet Sundaes start at $8.50 — built with your choice of gelato or sorbet, sauces and crunchy toppings.' },
+  { label: '🧇 Cones & toppings', reply: 'Pick a cup or a fresh waffle cone, then add sauces and crunchy toppings. Ask on WhatsApp for today\'s topping list.' },
+  { label: '🎂 Parties & events', reply: 'Planning a birthday, party or event? Message us on WhatsApp at +1 (234) 567-890 with your date and guest count and we\'ll sort out a custom order.' },
+  { label: '🚚 Delivery', reply: 'You can pre-order via WhatsApp at +1 (234) 567-890 — or just walk in, the waffle smell will guide you.' },
+  { label: '📍 Find us', reply: 'Follow us on Instagram for our latest location and pop-up updates, or message us on WhatsApp at +1 (234) 567-890.' },
+  { label: '🛒 Order on WhatsApp', reply: 'You can pre-order via WhatsApp at +1 (234) 567-890 — or just walk in, the waffle smell will guide you.' },
+];
+
 function answer(q: string): string {
+  const quick = QUICK_OPTIONS.find((o) => o.label === q);
+  if (quick) return quick.reply;
   const s = q.toLowerCase();
   if (/(hour|open|close|time|when|schedule)/.test(s))
     return "We're scooping Monday–Sunday, 11:00 AM – 11:00 PM, 365 days a year. Holiday pop-ups get announced on our Instagram!";
@@ -44,8 +61,8 @@ export default function Chatbot() {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
   }, [msgs, open]);
 
-  const send = () => {
-    const q = input.trim();
+  const send = (text?: string) => {
+    const q = (text ?? input).trim();
     if (!q) return;
     setMsgs((m) => [...m, { from: 'user', text: q }, { from: 'bot', text: answer(q) }]);
     setInput('');
@@ -85,7 +102,19 @@ export default function Chatbot() {
                 </div>
               ))}
             </div>
-            <div className="p-3 flex gap-2 border-t border-black/5">
+            <div className="px-3 pt-3 flex gap-2 overflow-x-auto border-t border-black/5">
+              {QUICK_OPTIONS.map((o) => (
+                <button
+                  key={o.label}
+                  onClick={() => send(o.label)}
+                  className="shrink-0 whitespace-nowrap rounded-full bg-white/80 px-3 py-1.5 text-xs font-semibold"
+                  style={{ color: 'var(--cocoa)' }}
+                >
+                  {o.label}
+                </button>
+              ))}
+            </div>
+            <div className="p-3 flex gap-2">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -95,7 +124,7 @@ export default function Chatbot() {
                 style={{ ['--tw-ring-color' as string]: 'var(--accent)' }}
               />
               <button
-                onClick={send}
+                onClick={() => send()}
                 data-cursor="Send"
                 className="w-9 h-9 rounded-full text-white font-bold shrink-0"
                 style={{ background: 'var(--cocoa)' }}
